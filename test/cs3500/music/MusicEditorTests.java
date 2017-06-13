@@ -4,11 +4,8 @@ package cs3500.music;
  * Created by sahaj on 6/7/2017.
  */
 
-import cs3500.music.model.MusicEditor;
-import cs3500.music.model.MusicEditorModel;
-import cs3500.music.model.MusicNote;
-import cs3500.music.model.Note;
-import cs3500.music.model.Pitch;
+import cs3500.music.model.*;
+import cs3500.music.model.EditorModel;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -28,8 +25,8 @@ public class MusicEditorTests {
   private Note bTen;
 
   private void initCond() {
-    m1 = new MusicEditor();
-    m2 = new MusicEditor();
+    m1 = new EditorModel();
+    m2 = new EditorModel();
     cOne = new MusicNote(Pitch.C, 1, 1, 1);
     cFourA = new MusicNote(Pitch.C, 4, 4, 4);
     cFourB = new MusicNote(Pitch.C, 4, 6, 4);

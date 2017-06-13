@@ -61,6 +61,18 @@ public interface MusicEditorModel {
   void setBeatsPerMeasure(int beatsPerMeasure);
 
   /**
+   * Returns current beat of model.
+   * @return current beat
+   */
+  int getCurrentBeat();
+
+  /**
+   * Sets new current beat to the model.
+   * @param currentBeat
+   */
+  void setCurrentBeat(int currentBeat);
+
+  /**
    * Places note onto music interface.
    * If there is an already placed note in the way, does NOT add the note.
    * Will extend length of music if necessary.
