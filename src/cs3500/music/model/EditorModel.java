@@ -33,7 +33,7 @@ public class EditorModel implements MusicEditorModel {
         this.notes = new TreeMap<Integer, List<Note>>();
         this.tempo = 60;
         this.beatsPerMeasure = 4;
-        this.currentBeat = 0;
+        this.currentBeat = 1;
     }
 
     @Override
@@ -50,6 +50,15 @@ public class EditorModel implements MusicEditorModel {
             }
         }
         return allNotes;
+    }
+
+    @Override
+    public List<Integer> currentNodeIndexes() {
+        List<Integer> ints = new ArrayList<Integer>();
+        for (Note n: this.notes.get(this.currentBeat)) {
+            ints.add(n.copy().noteIndex());
+        }
+        return ints;
     }
 
     @Override
@@ -161,7 +170,7 @@ public class EditorModel implements MusicEditorModel {
 
     @Override
     public void setCurrentBeat(int currentBeat) {
-        if (currentBeat <= -1 || currentBeat > this.getLength()) {
+        if (currentBeat <= 0 || currentBeat > this.getLength()) {
             throw new IllegalArgumentException("invalid beat");
         }
         this.currentBeat = currentBeat;

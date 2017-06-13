@@ -22,6 +22,11 @@ public interface MusicEditorModel {
    * Get current length of music.
    * @return length of music
    */
+
+  // TODO documentation
+  List<Integer> currentNodeIndexes();
+
+
   int getLength();
 
   /**

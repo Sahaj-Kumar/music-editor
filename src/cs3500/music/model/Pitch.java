@@ -37,7 +37,7 @@ public enum Pitch {
 
 
   // Map of indexes assoicated to their pitches
-  private static Map<Integer, Pitch> pitchMap = new HashMap<Integer, Pitch>();
+  public static Map<Integer, Pitch> pitchMap = new HashMap<Integer, Pitch>();
 
   static {
     for (Pitch pitchEnum : Pitch.values()) {

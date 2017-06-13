@@ -30,7 +30,6 @@ public class ConcreteGuiViewPanel extends JPanel {
   int beatsPerMeasure;
   int noteRange;
   int highestNoteIndex;
-  int unit;
   int margin;
 
 
@@ -41,13 +40,11 @@ public class ConcreteGuiViewPanel extends JPanel {
     this.highestNote = model.highestNote();
     this.currentBeat = model.getCurrentBeat();
     this.beatsPerMeasure = model.getBeatsPerMeasure();
-    this.noteRange = model.highestNote().noteIndex() - model.lowestNote().noteIndex() + 1;
+    this.noteRange = this.highestNote.noteIndex() - this.lowestNote.noteIndex() + 1;
     this.highestNoteIndex = model.highestNote().noteIndex();
-    this.unit = UNIT;
-    this.margin = this.unit * 5;
+    this.margin = UNIT * 5;
   }
 
-  // Dummy IGNORE THIS
   @Override
   public void paintComponent(Graphics g){
     // Handle the default painting
@@ -55,12 +52,13 @@ public class ConcreteGuiViewPanel extends JPanel {
     // Look for more documentation about the Graphics class,
     // and methods on it that may be useful
     //g.drawString("Hello World", 25, 25);
-    this.drawNotes(g);
-    this.drawSheet(g);
-    this.drawNotesAxisAndOctaveLines(g);
-    this.drawMeasureNumbers(g);
-    this.drawCurrentBeatMarker(g);
-    this.drawPiano(g);
+    if (this.lowestNote != null) {
+      this.drawNotes(g);
+      this.drawSheet(g);
+      this.drawNotesAxisAndOctaveLines(g);
+      this.drawMeasureNumbers(g);
+      this.drawCurrentBeatMarker(g);
+    }
 
   }
 
@@ -143,7 +141,7 @@ public class ConcreteGuiViewPanel extends JPanel {
     Graphics2D g2 = (Graphics2D) g;
     g2.setFont(new Font("TimeRoman", Font.PLAIN, UNIT));
     for (int i = 0; i <= Math.ceil(this.length / (double) this.beatsPerMeasure); i++) {
-      g2.drawString(Integer.toString(i), i * this.beatsPerMeasure * UNIT + this.margin + UNIT,
+      g2.drawString(Integer.toString(i * this.beatsPerMeasure), i * this.beatsPerMeasure * UNIT + this.margin + UNIT,
               this.margin);
     }
   }
@@ -152,14 +150,7 @@ public class ConcreteGuiViewPanel extends JPanel {
     Graphics2D g2 = (Graphics2D) g;
     g2.setPaint(Color.RED);
     g2.setStroke(new BasicStroke(2));
-    g2.drawLine((this.currentBeat + 1) * UNIT + this.margin, this.margin + UNIT,
-            (this.currentBeat + 1) * UNIT + this.margin, this.margin + (this.noteRange + 1) * UNIT);
+    g2.drawLine(this.currentBeat * UNIT + this.margin, this.margin + UNIT,
+            this.currentBeat * UNIT + this.margin, this.margin + (this.noteRange + 1) * UNIT);
   }
-
-  public void drawPiano(Graphics g) {
-
-  }
-
-
-
 }
