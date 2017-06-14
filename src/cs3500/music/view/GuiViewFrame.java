@@ -16,6 +16,7 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   private JPanel displayPanel; // You may want to refine this to a subtype of JPanel
   private JPanel pianoPanel;
   private JSplitPane split;
+  private JScrollPane scroll;
   private ActionListener al;
 
 
@@ -28,6 +29,7 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
     this.pianoPanel = new cs3500.music.view.PianoGuiViewPanel(this.model);
 
     this.split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.displayPanel, this.pianoPanel);
+
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     //this.getContentPane().add(displayPanel);
     this.getContentPane().add(this.split);
@@ -50,7 +52,6 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   @Override
   /** Handle the key-pressed event from the text field. */
   public void keyPressed(KeyEvent e) {
-    System.out.print(e);
     switch (e.getKeyCode()) {
       case KeyEvent.VK_RIGHT:
         this.moveRight();

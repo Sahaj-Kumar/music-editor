@@ -1,10 +1,12 @@
 package cs3500.music.view;
 
 import cs3500.music.model.MusicEditorModel;
+import cs3500.music.model.Note;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +24,10 @@ public class PianoGuiViewPanel extends JPanel {
 
     public PianoGuiViewPanel(MusicEditorModel model) {
         this.model = model;
-        this.activeKeys = model.currentNodeIndexes();
+        this.activeKeys = new ArrayList<Integer>();
+        for (Note n : model.currentNotes()) {
+            this.activeKeys.add(n.copy().noteIndex());
+        }
         this.lowestIndex = model.lowestNote().noteIndex();
         this.highestIndex = model.highestNote().noteIndex();
         this.margin = UNIT * 5;

@@ -24,7 +24,7 @@ public interface MusicEditorModel {
    */
 
   // TODO documentation
-  List<Integer> currentNodeIndexes();
+  List<Note> currentNotes();
 
 
   int getLength();

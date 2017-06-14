@@ -53,10 +53,10 @@ public class EditorModel implements MusicEditorModel {
     }
 
     @Override
-    public List<Integer> currentNodeIndexes() {
-        List<Integer> ints = new ArrayList<Integer>();
+    public List<Note> currentNotes() {
+        List<Note> ints = new ArrayList<Note>();
         for (Note n: this.notes.get(this.currentBeat)) {
-            ints.add(n.copy().noteIndex());
+            ints.add(n.copy());
         }
         return ints;
     }
@@ -100,7 +100,7 @@ public class EditorModel implements MusicEditorModel {
     private Note overallLowestOrHighestNote(boolean highest) {
         Note extreme = null;
         for (Map.Entry<Integer, List<Note>> notes : this.notes.entrySet()) {
-            Note extremeOfBeat = this.lowestOrHighestNoteInList(notes.getValue(), true);
+            Note extremeOfBeat = this.lowestOrHighestNoteInList(notes.getValue(), highest);
             if (extreme == null) {
                 extreme = extremeOfBeat;
             }

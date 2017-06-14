@@ -2,6 +2,7 @@ package cs3500.music.view;
 
 import cs3500.music.MusicEditor;
 import cs3500.music.model.MusicEditorModel;
+import cs3500.music.model.Note;
 
 import javax.sound.midi.*;
 
@@ -12,10 +13,34 @@ public class MidiViewImpl implements MidiView {
   private final Synthesizer synth;
   private final Receiver receiver;
 
-  public MidiViewImpl() throws MidiUnavailableException {
+
+  int resolution;
+  private Sequencer sequencer;
+  private Sequence sequence;
+  private Track track;
+
+
+  private final MusicEditorModel model;
+  private int midiTempo;
+
+  public MidiViewImpl(MusicEditorModel model) throws MidiUnavailableException, InvalidMidiDataException {
+    this.model = model;
     this.synth = MidiSystem.getSynthesizer();
     this.receiver = synth.getReceiver();
     this.synth.open();
+
+    this.resolution = 1;
+    this.sequencer = MidiSystem.getSequencer();
+    this.sequencer.setTempoInBPM(model.getTempo());
+    this.sequence = new Sequence(Sequence.PPQ, this.resolution);
+    this.track = sequence.createTrack();
+    this.makeTrack();
+    this.sequencer.setSequence(this.sequence);
+
+
+
+
+    this.midiTempo = (int) (Math.floor((1 / (double) (model.getTempo() / 60)) * 1000000));
   }
   /**
    * Relevant classes and methods from the javax.sound.midi library:
@@ -53,7 +78,16 @@ public class MidiViewImpl implements MidiView {
     MidiMessage stop = new ShortMessage(ShortMessage.NOTE_OFF, 0, 60, 64);
     this.receiver.send(start, -1);
     this.receiver.send(stop, this.synth.getMicrosecondPosition() + 200000);
-    
+    MidiMessage start2 = new ShortMessage(ShortMessage.NOTE_ON, 0, 64, 64);
+    MidiMessage stop2 = new ShortMessage(ShortMessage.NOTE_OFF, 0, 64, 64);
+    this.receiver.send(start2, -1);
+    this.receiver.send(stop2, this.synth.getMicrosecondPosition() + 200000);
+    MidiMessage start3 = new ShortMessage(ShortMessage.NOTE_ON, 0, 67, 64);
+    MidiMessage stop3 = new ShortMessage(ShortMessage.NOTE_OFF, 0, 67, 64);
+    this.receiver.send(start3, -1);
+    this.receiver.send(stop3, this.synth.getMicrosecondPosition() + 200000);
+
+
     /* 
     The receiver does not "block", i.e. this method
     immediately moves to the next line and closes the 
@@ -67,13 +101,40 @@ public class MidiViewImpl implements MidiView {
     this.receiver.close(); // Only call this once you're done playing *all* notes
   }
 
-  @Override
-  public void play() {
+  private void makeTrack() throws InvalidMidiDataException, MidiUnavailableException {
+    this.sequencer.open();
+    for (Note n : model.getNotes()) {
+      MidiMessage startMessage = new ShortMessage(ShortMessage.NOTE_ON, 0, n.noteIndex(), 64);
+      MidiMessage stopMessage = new ShortMessage(ShortMessage.NOTE_OFF, 0, n.noteIndex(), 64);
+      MidiEvent startEvent = new MidiEvent(startMessage, n.getStartPoint() * 500);
+      MidiEvent stopEvent = new MidiEvent(stopMessage, (n.getStartPoint() + n.getDuration() - 1) * 500);
+      this.track.add(startEvent);
+      this.track.add(stopEvent);
+    }
+  }
+
+  private long toTick(int timeStamp) {
+    return 0;
 
   }
 
   @Override
+  public void play() throws MidiUnavailableException {
+    this.sequencer.start();
+  }
+
+  @Override
   public void pause() {
+    this.sequencer.stop();
+  }
+
+  @Override
+  public void rewind() {
+    this.sequencer.setTickPosition(this.sequencer.getTickPosition() - 1);
+  }
+
+  @Override
+  public void fastForward() {
 
   }
 }

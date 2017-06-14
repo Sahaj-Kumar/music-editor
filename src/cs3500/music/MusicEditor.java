@@ -19,8 +19,6 @@ import javax.sound.midi.MidiUnavailableException;
 public class MusicEditor {
   public static void main(String[] args) throws IOException, InvalidMidiDataException, MidiUnavailableException {
 
-
-    MidiViewImpl midiView = new MidiViewImpl();
     // visual view of music editor
 
     // music editor model
@@ -40,10 +38,12 @@ public class MusicEditor {
     CompositionBuilder<MusicEditorModel> compBuilder = new MusicEditorBuilder();
     MusicEditorModel model = MusicReader.parseFile(mary, compBuilder);
 
-
+    model.setCurrentBeat(8);
+    model.appendMusic(model);
     GuiViewFrame view = new GuiViewFrame(model);
+    MidiViewImpl midiView = new MidiViewImpl(model);
 
-
+    midiView.play();
     view.initialize();
   }
 }
