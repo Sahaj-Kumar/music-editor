@@ -1,6 +1,7 @@
 package cs3500.music.view;
 
 import cs3500.music.model.MusicEditorModel;
+import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -17,7 +18,7 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   private JPanel pianoPanel;
   private JSplitPane split;
   private JScrollPane scroll;
-  private ActionListener al;
+  private Rectangle visibleRect;
 
 
   /**
@@ -28,8 +29,28 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
     this.displayPanel = new cs3500.music.view.ConcreteGuiViewPanel(this.model);
     this.scroll = new JScrollPane(this.displayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    this.visibleRect = this.scroll.getVisibleRect();
     this.pianoPanel = new cs3500.music.view.PianoGuiViewPanel(this.model);
     this.split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.scroll, this.pianoPanel);
+    this.split.setAutoscrolls(true);
+
+    this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    this.getContentPane().add(this.split);
+    this.addKeyListener(this);
+    this.setFocusable(true);
+    this.requestFocus();
+    this.pack();
+  }
+
+  public GuiViewFrame(MusicEditorModel model, boolean mock) {
+    this.model = model;
+    this.displayPanel = new cs3500.music.view.ConcreteGuiViewPanel(this.model);
+    this.scroll = new JScrollPane(this.displayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    this.visibleRect = this.scroll.getVisibleRect();
+    this.pianoPanel = new cs3500.music.view.MockPianoPanel(this.model);
+    this.split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.scroll, this.pianoPanel);
+    this.split.setAutoscrolls(true);
 
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     this.getContentPane().add(this.split);
@@ -49,8 +70,10 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
 
   }
 
+  /**
+   * Handle the key-pressed event from the text field.
+   */
   @Override
-  /** Handle the key-pressed event from the text field. */
   public void keyPressed(KeyEvent e) {
     switch (e.getKeyCode()) {
       case KeyEvent.VK_RIGHT:
@@ -74,6 +97,11 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
 
     try {
       this.model.setCurrentBeat(this.model.getCurrentBeat() + 1);
+      if (this.model.getCurrentBeat() * 20 + 140 > this.pianoPanel.getSize().width +
+              this.scroll.getHorizontalScrollBar().getValue()) {
+        this.scroll.getHorizontalScrollBar().setValue(
+                this.scroll.getHorizontalScrollBar().getValue() + this.pianoPanel.getSize().width - 20);
+      }
       this.rePaintScene();
     }
     catch (IllegalArgumentException x) {
@@ -85,6 +113,10 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   public void moveLeft() {
     try {
       this.model.setCurrentBeat(this.model.getCurrentBeat() - 1);
+      if (this.model.getCurrentBeat() * 20 + 140 < this.scroll.getHorizontalScrollBar().getValue() + 60) {
+        this.scroll.getHorizontalScrollBar().setValue(
+                this.scroll.getHorizontalScrollBar().getValue() - this.pianoPanel.getSize().width + 20);
+      }
       this.rePaintScene();
     }
     catch (IllegalArgumentException x) {
@@ -101,4 +133,6 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   public void activate() {
     this.initialize();
   }
+
+
 }

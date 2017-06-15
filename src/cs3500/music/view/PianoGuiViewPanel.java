@@ -2,6 +2,7 @@ package cs3500.music.view;
 
 import cs3500.music.model.MusicEditorModel;
 import cs3500.music.model.Note;
+import cs3500.music.model.Pitch;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class PianoGuiViewPanel extends JPanel {
   final static int UNIT = 20;
 
   private MusicEditorModel model;
-  private List<Integer> activeKeys;
+  //private List<Integer> activeKeys;
 
   private int margin;
 
@@ -39,7 +40,7 @@ public class PianoGuiViewPanel extends JPanel {
         this.drawPiano(g);
     }
 
-    public void drawPiano(Graphics g) {
+    private void drawPiano(Graphics g) {
         ArrayList<Integer> curNotes = new ArrayList<Integer>();
         for (Note n : model.currentNotes()) {
             curNotes.add(n.copy().noteIndex());
@@ -55,12 +56,7 @@ public class PianoGuiViewPanel extends JPanel {
                 else {
                   g2.setPaint(Color.WHITE);
                 }
-
-                g2.fill(new Rectangle2D.Double(this.margin + (counter - 1) * UNIT, this.margin,
-                        UNIT, 10 * UNIT));
-                g2.setPaint(Color.BLACK);
-                g2.drawRect(this.margin + (counter - 1) * UNIT, this.margin,
-                        UNIT, 10 * UNIT);
+                this.drawNote(g2, counter, i);
             }
         }
         counter = 0;
@@ -74,12 +70,25 @@ public class PianoGuiViewPanel extends JPanel {
                 } else {
                     g2.setPaint(Color.BLACK);
                 }
+            this.drawNote(g2, counter, i);
+            }
+        }
+    }
 
-                g2.fill(new Rectangle2D.Double(this.margin + counter * UNIT - (UNIT / 4), this.margin,
-                        UNIT / 2, 5 * UNIT));
-                g2.setPaint(Color.BLACK);
-                g2.drawRect(this.margin + counter * UNIT - (UNIT / 4), this.margin,
-                        UNIT / 2, 5 * UNIT);            }
+    protected void drawNote(Graphics2D g2, int counter, int i) {
+        if (this.isWhiteKey(i)) {
+            g2.fill(new Rectangle2D.Double(this.margin + (counter - 1) * UNIT, this.margin,
+                    UNIT, 10 * UNIT));
+            g2.setPaint(Color.BLACK);
+            g2.drawRect(this.margin + (counter - 1) * UNIT, this.margin,
+                    UNIT, 10 * UNIT);
+        }
+        else {
+            g2.fill(new Rectangle2D.Double(this.margin + counter * UNIT - (UNIT / 4), this.margin,
+                    UNIT / 2, 5 * UNIT));
+            g2.setPaint(Color.BLACK);
+            g2.drawRect(this.margin + counter * UNIT - (UNIT / 4), this.margin,
+                    UNIT / 2, 5 * UNIT);
         }
     }
 
@@ -87,6 +96,10 @@ public class PianoGuiViewPanel extends JPanel {
         int pitchInd = Math.floorMod(i, 12);
         return pitchInd != 2 && pitchInd != 4 &&
                 pitchInd != 7 && pitchInd != 9 && pitchInd != 11;
+    }
+
+    protected String log() {
+        return "poo";
     }
 
 }

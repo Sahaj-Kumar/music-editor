@@ -73,21 +73,20 @@ public class MidiViewImpl implements MidiView {
    */
 
 
-  private void makeTrack() throws InvalidMidiDataException, MidiUnavailableException {
+  private void makeTrack() throws MidiUnavailableException, InvalidMidiDataException {
     this.sequencer.open();
     for (Note n : model.getNotes()) {
-      MidiMessage startMessage = new ShortMessage(ShortMessage.NOTE_ON, 0, n.noteIndex(), 64);
-      MidiMessage stopMessage = new ShortMessage(ShortMessage.NOTE_OFF, 0, n.noteIndex(), 64);
-      MidiEvent startEvent = new MidiEvent(startMessage, n.getStartPoint());
-      MidiEvent stopEvent = new MidiEvent(stopMessage, (n.getStartPoint() + n.getDuration() - 1));
-
-      this.addToTrack(startEvent, stopEvent);
+      this.addToTrack(n);
     }
   }
 
-  protected void addToTrack(MidiEvent start, MidiEvent stop) {
-    this.track.add(start);
-    this.track.add(stop);
+  protected void addToTrack(Note n) throws InvalidMidiDataException {
+    MidiMessage startMessage = new ShortMessage(ShortMessage.NOTE_ON, 0, n.noteIndex(), 64);
+    MidiMessage stopMessage = new ShortMessage(ShortMessage.NOTE_OFF, 0, n.noteIndex(), 64);
+    MidiEvent startEvent = new MidiEvent(startMessage, n.getStartPoint());
+    MidiEvent stopEvent = new MidiEvent(stopMessage, (n.getStartPoint() + n.getDuration() - 1));
+    this.track.add(startEvent);
+    this.track.add(stopEvent);
   }
 
   private long toTick(int timeStamp) {

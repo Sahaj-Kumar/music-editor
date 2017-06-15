@@ -133,7 +133,7 @@ public class ConcreteGuiViewPanel extends JPanel {
    * Draws the grid of music.
    * This grid should expand from the lowest to the highest note in the
    * current music, and expand from beat one up to the length of music divided
-   * by beats per measure, rounded up.
+   * by
    * @param g
    */
   private void drawSheet(Graphics g) {
