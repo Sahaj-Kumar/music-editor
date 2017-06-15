@@ -26,12 +26,12 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   public GuiViewFrame(MusicEditorModel model) {
     this.model = model;
     this.displayPanel = new cs3500.music.view.ConcreteGuiViewPanel(this.model);
+    this.scroll = new JScrollPane(this.displayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     this.pianoPanel = new cs3500.music.view.PianoGuiViewPanel(this.model);
-
-    this.split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.displayPanel, this.pianoPanel);
+    this.split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.scroll, this.pianoPanel);
 
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    //this.getContentPane().add(displayPanel);
     this.getContentPane().add(this.split);
     this.addKeyListener(this);
     this.setFocusable(true);
@@ -71,9 +71,10 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
 
   @Override
   public void moveRight() {
+
     try {
       this.model.setCurrentBeat(this.model.getCurrentBeat() + 1);
-
+      this.rePaintScene();
     }
     catch (IllegalArgumentException x) {
       x.printStackTrace();
@@ -84,15 +85,20 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   public void moveLeft() {
     try {
       this.model.setCurrentBeat(this.model.getCurrentBeat() - 1);
+      this.rePaintScene();
     }
     catch (IllegalArgumentException x) {
       x.printStackTrace();
     }
   }
 
-  @Override
-  public Dimension getPreferredSize(){
-    return new Dimension(100, 100);
+  private void rePaintScene() {
+    this.displayPanel.repaint();
+    this.pianoPanel.repaint();
   }
 
+  @Override
+  public void activate() {
+    this.initialize();
+  }
 }

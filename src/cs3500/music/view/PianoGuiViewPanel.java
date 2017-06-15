@@ -14,23 +14,19 @@ import java.util.List;
  */
 public class PianoGuiViewPanel extends JPanel {
 
-    final static int UNIT = 20;
+  final static int UNIT = 20;
 
-    private MusicEditorModel model;
-    private List<Integer> activeKeys;
-    private int lowestIndex;
-    private int highestIndex;
-    private int margin;
+  private MusicEditorModel model;
+  private List<Integer> activeKeys;
+
+  private int margin;
 
     public PianoGuiViewPanel(MusicEditorModel model) {
         this.model = model;
-        this.activeKeys = new ArrayList<Integer>();
-        for (Note n : model.currentNotes()) {
-            this.activeKeys.add(n.copy().noteIndex());
-        }
-        this.lowestIndex = model.lowestNote().noteIndex();
-        this.highestIndex = model.highestNote().noteIndex();
-        this.margin = UNIT * 5;
+        //this.lowestIndex = model.lowestNote().noteIndex();
+        //this.highestIndex = model.highestNote().noteIndex();
+        this.margin = UNIT * 2;
+        this.setPreferredSize(new Dimension(this.margin * 14, this.margin * 2));
     }
 
     @Override
@@ -44,13 +40,16 @@ public class PianoGuiViewPanel extends JPanel {
     }
 
     public void drawPiano(Graphics g) {
+        ArrayList<Integer> curNotes = new ArrayList<Integer>();
+        for (Note n : model.currentNotes()) {
+            curNotes.add(n.copy().noteIndex());
+        }
         Graphics2D g2 = (Graphics2D) g;
         int counter = 0;
-
         for (int i = 1; i <= 120; i++) {
             if (this.isWhiteKey(i)) {
                 counter++;
-                if (this.activeKeys.contains(i)) {
+                if (curNotes.contains(i)) {
                   g2.setPaint(Color.ORANGE);
                 }
                 else {
@@ -70,7 +69,7 @@ public class PianoGuiViewPanel extends JPanel {
                 counter++;
             }
             else {
-                if (this.activeKeys.contains(i)) {
+                if (curNotes.contains(i)) {
                     g2.setPaint(Color.CYAN);
                 } else {
                     g2.setPaint(Color.BLACK);

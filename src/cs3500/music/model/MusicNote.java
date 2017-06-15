@@ -4,6 +4,8 @@ package cs3500.music.model;
  * Created by sahaj on 6/4/2017.
  */
 
+// TODO BETTER JAVA DOC
+
 /**
  * represents a implementation of note: a traditional western music note.
  */

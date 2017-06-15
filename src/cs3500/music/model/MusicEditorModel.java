@@ -6,6 +6,8 @@ package cs3500.music.model;
 
 import java.util.List;
 
+// TODO BETTER JAVA DOC
+
 /**
  * represents a model for a music editor.
  */
@@ -19,14 +21,16 @@ public interface MusicEditorModel {
   List<Note> getNotes();
 
   /**
+   * Returns all notes played at current beat.
+   * NOTE: THIS METHOD IS NEW ASSIGNMENT FIVE.
+   * @return List of notes playing at current beat
+   */
+  List<Note> currentNotes();
+
+  /**
    * Get current length of music.
    * @return length of music
    */
-
-  // TODO documentation
-  List<Note> currentNotes();
-
-
   int getLength();
 
   /**

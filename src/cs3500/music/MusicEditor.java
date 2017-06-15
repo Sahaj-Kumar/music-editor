@@ -7,8 +7,8 @@ import cs3500.music.model.Pitch;
 import cs3500.music.util.CompositionBuilder;
 import cs3500.music.util.MusicEditorBuilder;
 import cs3500.music.util.MusicReader;
-import cs3500.music.view.GuiViewFrame;
-import cs3500.music.view.MidiViewImpl;
+import cs3500.music.util.ViewFactory;
+import cs3500.music.view.*;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,31 +19,19 @@ import javax.sound.midi.MidiUnavailableException;
 public class MusicEditor {
   public static void main(String[] args) throws IOException, InvalidMidiDataException, MidiUnavailableException {
 
-    // visual view of music editor
+    String fileName = args[0];
+    String type = args[1];
 
-    // music editor model
-
-    //MusicEditorModel model = new EditorModel();
-
-
-    //model.placeNote(new MusicNote(Pitch.C, 4, 1, 4));
-    //model.placeNote(new MusicNote(Pitch.Cx, 4, 5, 4));
-    //model.placeNote(new MusicNote(Pitch.D, 4, 5, 4));
-    //model.placeNote(new MusicNote(Pitch.C, 5, 11, 4));
-    //model.placeNote(new MusicNote(Pitch.D, 5,11, 4));
-    //model.placeNote(new MusicNote(Pitch.Ax, 6, 20, 8));
-    //model.setCurrentBeat(5);
-
-    Readable mary = new FileReader("mary-little-lamb.txt");
+    Readable readeableFile = new FileReader(fileName);
     CompositionBuilder<MusicEditorModel> compBuilder = new MusicEditorBuilder();
-    MusicEditorModel model = MusicReader.parseFile(mary, compBuilder);
+    MusicEditorModel model = MusicReader.parseFile(readeableFile, compBuilder);
 
-    model.setCurrentBeat(8);
-    model.appendMusic(model);
-    GuiViewFrame view = new GuiViewFrame(model);
-    MidiViewImpl midiView = new MidiViewImpl(model);
-
-    midiView.play();
-    view.initialize();
+    if (type.equals("console")) {
+      System.out.print(model.getMusicState());
+      return;
+    }
+    else {
+      ViewFactory.generateView(model, type).activate();
+    }
   }
 }

@@ -6,13 +6,12 @@ import javax.sound.midi.MidiUnavailableException;
 /**
  * Created by sahaj on 6/12/2017.
  */
-public interface MidiView {
+public interface MidiView extends IView {
 
     void play() throws InvalidMidiDataException, MidiUnavailableException;
 
-    void pause();
+    String log();
 
-    void rewind();
-
-    void fastForward();
 }
+
+

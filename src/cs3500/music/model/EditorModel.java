@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+// TODO BETTER JAVA DOC
+
 /**
  * represents implementation of music editor model.
  */

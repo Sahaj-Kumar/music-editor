@@ -23,14 +23,20 @@ public class MusicEditorBuilder implements CompositionBuilder<MusicEditorModel> 
 
     @Override
     public CompositionBuilder<MusicEditorModel> setTempo(int tempo) {
-        model.setTempo(tempo);
+        int newTempo = (int) Math.floor((tempo / 100000.0) * 500);
+        model.setTempo(newTempo);
         return this;
     }
 
     // TODO idealize this
     @Override
     public CompositionBuilder<MusicEditorModel> addNote(int start, int end, int instrument, int pitch, int volume) {
-        model.placeNote(new MusicNote(Pitch.pitchMap.get(Math.floorMod(pitch, 12) + 1), pitch / 12 + 1, start + 1, end - start));
+        model.placeNote(
+                new MusicNote(
+                        Pitch.pitchMap.get(Math.floorMod(pitch, 12) + 1),
+                        pitch / 12 + 1,
+                        start + 1,
+                        end - start));
         return this;
     }
 }
