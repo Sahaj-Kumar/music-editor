@@ -4,10 +4,11 @@ package cs3500.music.model;
  * Created by sahaj on 6/4/2017.
  */
 
-// TODO BETTER JAVA DOC
-
 /**
- * represents a implementation of note: a traditional western music note.
+ * Nepresents a implementation of note: a traditional western music note.
+ * Note contains a pitch, octave, starting point and duration. These
+ * parameters can be set to different ones, as long as they fit certain
+ * conditions.
  */
 public class MusicNote implements Note {
 

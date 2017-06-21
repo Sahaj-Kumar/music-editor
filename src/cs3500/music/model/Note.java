@@ -7,7 +7,10 @@ package cs3500.music.model;
 // TODO BETTER JAVA DOC
 
 /**
- * represents a model for a note played in music.
+ * Represents a model for a note played in music.
+ * Should be able to get and set its octave, pitch, starting point, each should
+ * have a unique note index such that lower notes have lower indices and higher
+ * notes have higher indices.
  */
 public interface Note {
 

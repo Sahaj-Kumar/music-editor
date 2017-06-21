@@ -6,10 +6,11 @@ package cs3500.music.model;
 
 import java.util.List;
 
-// TODO BETTER JAVA DOC
-
 /**
- * represents a model for a music editor.
+ * Represents a model for a music editor. Supports functionality including,
+ * adding and removing notes, editing current notes' starting point, pitch,
+ * and duration. Can also append and overlay notes. Has componenets like
+ * tempo, beats per measure, and the current beat.
  */
 public interface MusicEditorModel {
 
@@ -22,7 +23,7 @@ public interface MusicEditorModel {
 
   /**
    * Returns all notes played at current beat.
-   * NOTE: THIS METHOD IS NEW ASSIGNMENT FIVE.
+   * NOTE: THIS METHOD IS NEW ASSIGNMENT SINCE FIVE.
    * @return List of notes playing at current beat
    */
   List<Note> currentNotes();
@@ -44,6 +45,12 @@ public interface MusicEditorModel {
    * @return beats per measure of music
    */
   int getBeatsPerMeasure();
+
+  /**
+   * Checks if music is playing or note.
+   * @return true if playing, false otherwise.
+   */
+  boolean isPlaying();
 
   /**
    * Return lowest note in the music, null if does not exist. Useful for display.
@@ -77,7 +84,7 @@ public interface MusicEditorModel {
 
   /**
    * Sets new current beat to the model.
-   * @param currentBeat
+   * @param currentBeat the new current beat
    */
   void setCurrentBeat(int currentBeat);
 
@@ -154,8 +161,9 @@ public interface MusicEditorModel {
    */
   String getMusicState();
 
+  void play();
 
-
+  void pause();
 
 
 }

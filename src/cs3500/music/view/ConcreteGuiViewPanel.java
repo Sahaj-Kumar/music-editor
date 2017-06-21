@@ -1,19 +1,18 @@
 package cs3500.music.view;
 
-import cs3500.music.MusicEditor;
 import cs3500.music.model.MusicEditorModel;
 import cs3500.music.model.Note;
 import cs3500.music.model.Pitch;
 
-import java.awt.*;
-import java.awt.geom.Line2D;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 /**
  * A dummy view that simply draws a string. PSYCH, nah this does stuff now.
@@ -31,7 +30,6 @@ public class ConcreteGuiViewPanel extends JPanel {
   private MusicEditorModel model;
   private int length;
   private Note lowestNote;
-  private Note highestNote;
   private int beatsPerMeasure;
   private int noteRange;
   private int highestNoteIndex;
@@ -43,23 +41,23 @@ public class ConcreteGuiViewPanel extends JPanel {
    * Takes the model, harvests some of its parameters for convenience.
    * @param model the model being rendered
    */
-  public ConcreteGuiViewPanel(MusicEditorModel model) {
+  ConcreteGuiViewPanel(MusicEditorModel model) {
     this.model = model;
     this.length = model.getLength();
     this.lowestNote = model.lowestNote();
-    this.highestNote = model.highestNote();
+    Note highestNote = model.highestNote();
     this.beatsPerMeasure = model.getBeatsPerMeasure();
-    this.noteRange = this.highestNote.noteIndex() - this.lowestNote.noteIndex() + 1;
+    this.noteRange = highestNote.noteIndex() - this.lowestNote.noteIndex() + 1;
     this.highestNoteIndex = model.highestNote().noteIndex();
     this.margin = UNIT * 5;
     // this sets the size of the window. Helps with implementing a horizontal and vertical scroller.
     this.setPreferredSize(new Dimension(
-            this.margin * 2+ (this.length / this.beatsPerMeasure) * this.beatsPerMeasure * UNIT,
-            this.margin * 2+ this.noteRange * UNIT));
+            this.margin * 2 + (this.length / this.beatsPerMeasure) * this.beatsPerMeasure * UNIT,
+            this.margin * 2 + this.noteRange * UNIT));
   }
 
   @Override
-  public void paintComponent(Graphics g){
+  public void paintComponent(Graphics g) {
     // Handle the default painting
     super.paintComponent(g);
     // Look for more documentation about the Graphics class,
@@ -134,7 +132,7 @@ public class ConcreteGuiViewPanel extends JPanel {
    * This grid should expand from the lowest to the highest note in the
    * current music, and expand from beat one up to the length of music divided
    * by
-   * @param g
+   * @param g graphics used
    */
   private void drawSheet(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
@@ -147,6 +145,11 @@ public class ConcreteGuiViewPanel extends JPanel {
     }
   }
 
+  /**
+   * Draws notes axis on left side of sheet, from current lowest note, to highest
+   * note. Also draws thicker horizontal lines for each octave change.
+   * @param g graphics used
+   */
   private void drawNotesAxisAndOctaveLines(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
     Pitch curPitch = this.lowestNote.getPitch();
@@ -155,32 +158,46 @@ public class ConcreteGuiViewPanel extends JPanel {
             * this.beatsPerMeasure;
     g2.setFont(new Font("TimesRoman", Font.PLAIN, UNIT));
     for (int i = this.noteRange; i > 0; i--) {
-      g2.drawString(curPitch.toString() + Integer.toString(curOctave), this.margin - 2 * UNIT,
+      g2.drawString(curPitch.toString() + Integer.toString(curOctave),
+              this.margin - 2 * UNIT,
               (i + 1) * UNIT + this.margin);
       curPitch = curPitch.nextPitch();
       if (curPitch == Pitch.C) {
         curOctave++;
         g2.setStroke(new BasicStroke(3));
         g2.drawLine(this.margin + UNIT, (i + 1) * UNIT + this.margin - UNIT,
-                this.margin + measuresLength * UNIT + UNIT, (i + 1) * UNIT + this.margin - UNIT);
+                this.margin + measuresLength * UNIT + UNIT,
+                (i + 1) * UNIT + this.margin - UNIT);
       }
     }
   }
 
+  /**
+   * Draws the measure numbers above the music sheet. These are based off the model's
+   * beat per measure.
+   * @param g graphics used
+   */
   private void drawMeasureNumbers(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
-    g2.setFont(new Font("TimeRoman", Font.PLAIN, UNIT));
+    g2.setFont(new Font("TimesRoman", Font.PLAIN, UNIT));
     for (int i = 0; i <= Math.ceil(this.length / (double) this.beatsPerMeasure); i++) {
-      g2.drawString(Integer.toString(i * this.beatsPerMeasure), i * this.beatsPerMeasure * UNIT + this.margin + UNIT,
+      g2.drawString(Integer.toString(i * this.beatsPerMeasure),
+              i * this.beatsPerMeasure * UNIT + this.margin + UNIT,
               this.margin);
     }
   }
 
+  /**
+   * Draws the red line for the current beat. This is based off of the model's
+   * current beat.
+   * @param g graphics used
+   */
   private void drawCurrentBeatMarker(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
     g2.setPaint(Color.RED);
     g2.setStroke(new BasicStroke(2));
     g2.drawLine(this.model.getCurrentBeat() * UNIT + this.margin, this.margin + UNIT,
-            this.model.getCurrentBeat() * UNIT + this.margin, this.margin + (this.noteRange + 1) * UNIT);
+            this.model.getCurrentBeat() * UNIT + this.margin,
+            this.margin + (this.noteRange + 1) * UNIT);
   }
 }

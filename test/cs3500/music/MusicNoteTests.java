@@ -116,8 +116,4 @@ public class MusicNoteTests {
     this.initCond();
     n1.setDuration(-1);
   }
-
-
-
-
 }

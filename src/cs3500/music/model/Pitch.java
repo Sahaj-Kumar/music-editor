@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents enumeration of standard pitches.
+ * Represents enumeration of standard pitches. These pitches follow the
+ * conventions of traditional western music.
  */
 public enum Pitch {
 

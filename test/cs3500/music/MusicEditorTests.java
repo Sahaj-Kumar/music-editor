@@ -4,8 +4,11 @@ package cs3500.music;
  * Created by sahaj on 6/7/2017.
  */
 
-import cs3500.music.model.*;
 import cs3500.music.model.EditorModel;
+import cs3500.music.model.MusicEditorModel;
+import cs3500.music.model.MusicNote;
+import cs3500.music.model.Note;
+import cs3500.music.model.Pitch;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -331,6 +334,4 @@ public class MusicEditorTests {
     assertEquals(m1.getNotes().get(1).getOctave(), 10);
     assertEquals(m1.getNotes().get(1).getDuration(), 4);
   }
-
-
 }
