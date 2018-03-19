@@ -7,8 +7,6 @@ package cs3500.music.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 
 /**
@@ -31,9 +29,6 @@ public class EditorModel implements MusicEditorModel {
   // current beat of the music
   private int currentBeat;
 
-  private boolean playing;
-
-  private Timer timer;
   /**
    * contructs instance of music editor, with no music notes, no established beats,
    * a default tempo of 60bpm, and a default beats per measure of 4, and a default
@@ -45,8 +40,6 @@ public class EditorModel implements MusicEditorModel {
     this.tempo = 60;
     this.beatsPerMeasure = 4;
     this.currentBeat = 1;
-    this.playing = false;
-    this.timer = new Timer();
   }
 
   @Override
@@ -68,10 +61,15 @@ public class EditorModel implements MusicEditorModel {
   @Override
   public List<Note> currentNotes() {
     List<Note> ints = new ArrayList<Note>();
-    for (Note n: this.notes.get(this.currentBeat)) {
-      ints.add(n.copy());
+    if (this.notes.isEmpty()) {
+      return ints;
     }
-    return ints;
+    else {
+      for (Note n : this.notes.get(this.currentBeat)) {
+        ints.add(n.copy());
+      }
+      return ints;
+    }
   }
 
   @Override
@@ -92,11 +90,6 @@ public class EditorModel implements MusicEditorModel {
   @Override
   public int getBeatsPerMeasure() {
     return this.beatsPerMeasure;
-  }
-
-  @Override
-  public boolean isPlaying() {
-    return playing;
   }
 
   @Override
@@ -188,7 +181,7 @@ public class EditorModel implements MusicEditorModel {
 
   @Override
   public void setCurrentBeat(int currentBeat) {
-    if (currentBeat <= 0 || currentBeat > this.getLength()) {
+    if (currentBeat <= 0 || currentBeat > this.getLength() + 1) {
       throw new IllegalArgumentException("invalid beat");
     }
     this.currentBeat = currentBeat;
@@ -326,16 +319,6 @@ public class EditorModel implements MusicEditorModel {
     return musicState;
   }
 
-  @Override
-  public void play() {
-    this.timer.schedule(new playMusic(), 0, this.tempo);
-  }
-
-  @Override
-  public void pause() {
-    this.timer.cancel();
-  }
-
   /**
    * Returns a string of consecutive music notes (pitch and octave), from the lowest note in
    * the music, to the highest. There will always be 5 character-spaces allocated to each music.
@@ -416,16 +399,4 @@ public class EditorModel implements MusicEditorModel {
     }
     return null;
   }
-
-  class playMusic extends TimerTask {
-
-    @Override
-    public void run() {
-      if (getCurrentBeat() < getLength()) {
-        setCurrentBeat(getCurrentBeat() + 1);
-      }
-    }
-
-  }
-
 }

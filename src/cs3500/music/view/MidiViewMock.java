@@ -47,6 +47,7 @@ public class MidiViewMock extends MidiViewImpl {
             .append("\n");
   }
 
+
   @Override
   public String log() {
     return this.log.toString();

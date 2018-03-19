@@ -4,6 +4,8 @@ package cs3500.music.view;
  * Created by sahaj on 6/12/2017.
  */
 
+import cs3500.music.model.Note;
+
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
@@ -34,13 +36,39 @@ public interface GuiView extends IView {
    */
   void moveLeft();
 
+  /**
+   * Perform the action of moving right. This means, moving the current beat
+   * marker one beat to the right as long as the model permits it. Should update
+   * scrollbar if it is relevant or necessary.
+   */
   void goToStart();
 
+  /**
+   * Goes to very last beat of piece.
+   */
+  void goToEnd();
+
+  /**
+   * Repaines the whole scene.
+   */
   void rePaintScene();
 
-  void pack();
-
+  /**
+   * Sets key listener to given.
+   * @param listener key listener
+   */
   void setKeyListener(KeyListener listener);
 
+  /**
+   * Sets mouse listener to given.
+   * @param listner mouse listener
+   */
   void setMouseListener(MouseListener listner);
+
+  /**
+   * Places given note on piece.
+   * @param n the note
+   */
+  void placeNote(Note n);
+
 }

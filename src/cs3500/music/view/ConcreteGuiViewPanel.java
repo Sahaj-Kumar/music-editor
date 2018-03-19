@@ -30,7 +30,6 @@ public class ConcreteGuiViewPanel extends JPanel {
   private MusicEditorModel model;
   private int length;
   private Note lowestNote;
-  private int beatsPerMeasure;
   private int noteRange;
   private int highestNoteIndex;
   // margin to shift sheet away from edges
@@ -43,17 +42,33 @@ public class ConcreteGuiViewPanel extends JPanel {
    */
   ConcreteGuiViewPanel(MusicEditorModel model) {
     this.model = model;
-    this.length = model.getLength();
-    this.lowestNote = model.lowestNote();
-    Note highestNote = model.highestNote();
-    this.beatsPerMeasure = model.getBeatsPerMeasure();
-    this.noteRange = highestNote.noteIndex() - this.lowestNote.noteIndex() + 1;
-    this.highestNoteIndex = model.highestNote().noteIndex();
     this.margin = UNIT * 5;
-    // this sets the size of the window. Helps with implementing a horizontal and vertical scroller.
-    this.setPreferredSize(new Dimension(
-            this.margin * 2 + (this.length / this.beatsPerMeasure) * this.beatsPerMeasure * UNIT,
+
+    /*
+    this.setSize(new Dimension(
+            this.margin * 2 + (this.length / this.model.getBeatsPerMeasure()) *
+                    this.model.getBeatsPerMeasure() *
+                    UNIT,
             this.margin * 2 + this.noteRange * UNIT));
+            */
+    this.setPreferredSize(new Dimension(
+            this.margin * 2 + (this.length / this.model.getBeatsPerMeasure()) *
+                    this.model.getBeatsPerMeasure() *
+                    UNIT,
+            this.margin * 2 + this.noteRange * UNIT));
+
+    if (model.lowestNote() != null) {
+      this.length = model.getLength();
+      this.lowestNote = model.lowestNote();
+      Note highestNote = model.highestNote();
+      this.noteRange = highestNote.noteIndex() - this.lowestNote.noteIndex() + 1;
+      this.highestNoteIndex = model.highestNote().noteIndex();
+
+    }
+    else {
+      this.length = 0;
+      this.noteRange = 0;
+    }
   }
 
   @Override
@@ -63,12 +78,18 @@ public class ConcreteGuiViewPanel extends JPanel {
     // Look for more documentation about the Graphics class,
     // and methods on it that may be useful
     //g.drawString("Hello World", 25, 25);
-    if (this.lowestNote != null) {
+    if (model.lowestNote() != null) {
       this.drawNotes(g);
       this.drawSheet(g);
       this.drawNotesAxisAndOctaveLines(g);
       this.drawMeasureNumbers(g);
       this.drawCurrentBeatMarker(g);
+      this.setVisible(true);
+    }
+    else {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setFont(new Font("TimesRoman", Font.PLAIN, 100));
+      g2.drawString("Place a Note!", 100, 100);
     }
 
   }
@@ -137,10 +158,12 @@ public class ConcreteGuiViewPanel extends JPanel {
   private void drawSheet(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
     g2.setPaint(Color.BLACK);
+
     for (int i = 1; i <= this.noteRange; i++) {
-      for (int i2 = 0; i2 < Math.ceil(this.length / (double) this.beatsPerMeasure); i2++) {
-        g2.drawRect(i2 * UNIT * this.beatsPerMeasure + this.margin + UNIT,
-                (i * UNIT) + this.margin, this.beatsPerMeasure * UNIT, UNIT);
+      for (int i2 = 0; i2 < Math.ceil(this.model.getLength() / (double) this.model
+              .getBeatsPerMeasure()); i2++) {
+        g2.drawRect(i2 * UNIT * this.model.getBeatsPerMeasure() + this.margin + UNIT,
+                (i * UNIT) + this.margin, this.model.getBeatsPerMeasure() * UNIT, UNIT);
       }
     }
   }
@@ -154,8 +177,8 @@ public class ConcreteGuiViewPanel extends JPanel {
     Graphics2D g2 = (Graphics2D) g;
     Pitch curPitch = this.lowestNote.getPitch();
     int curOctave = this.lowestNote.getOctave();
-    int measuresLength = (int) Math.ceil(this.length / (double) this.beatsPerMeasure)
-            * this.beatsPerMeasure;
+    int measuresLength = (int) Math.ceil(this.length / (double) this.model.getBeatsPerMeasure())
+            * this.model.getBeatsPerMeasure();
     g2.setFont(new Font("TimesRoman", Font.PLAIN, UNIT));
     for (int i = this.noteRange; i > 0; i--) {
       g2.drawString(curPitch.toString() + Integer.toString(curOctave),
@@ -180,9 +203,9 @@ public class ConcreteGuiViewPanel extends JPanel {
   private void drawMeasureNumbers(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
     g2.setFont(new Font("TimesRoman", Font.PLAIN, UNIT));
-    for (int i = 0; i <= Math.ceil(this.length / (double) this.beatsPerMeasure); i++) {
-      g2.drawString(Integer.toString(i * this.beatsPerMeasure),
-              i * this.beatsPerMeasure * UNIT + this.margin + UNIT,
+    for (int i = 0; i <= Math.ceil(this.length / (double) this.model.getBeatsPerMeasure()); i++) {
+      g2.drawString(Integer.toString(i * this.model.getBeatsPerMeasure()),
+              i * this.model.getBeatsPerMeasure() * UNIT + this.margin + UNIT,
               this.margin);
     }
   }
@@ -200,4 +223,28 @@ public class ConcreteGuiViewPanel extends JPanel {
             this.model.getCurrentBeat() * UNIT + this.margin,
             this.margin + (this.noteRange + 1) * UNIT);
   }
+
+  /**
+   * Updates fields when a new note was placed.
+   */
+  public void updateParams() {
+    this.length = model.getLength();
+    this.lowestNote = model.lowestNote();
+    Note highestNote = model.highestNote();
+    int beatsPerMeasure = model.getBeatsPerMeasure();
+    this.noteRange = highestNote.noteIndex() - this.lowestNote.noteIndex() + 1;
+    this.highestNoteIndex = model.highestNote().noteIndex();
+    this.setSize(new Dimension(
+            this.margin * 2 + (this.length / beatsPerMeasure)
+                    * beatsPerMeasure * UNIT,
+            this.margin * 2 + this.noteRange * UNIT));
+
+    this.setPreferredSize(new Dimension(
+            this.margin * 2 + (this.length / beatsPerMeasure)
+                    * beatsPerMeasure * UNIT,
+            this.margin * 2 + this.noteRange * UNIT));
+  }
+
+
+
 }

@@ -4,10 +4,7 @@ import cs3500.music.model.MusicEditorModel;
 import cs3500.music.model.Note;
 
 import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
@@ -21,10 +18,12 @@ import java.util.ArrayList;
  */
 public class PianoGuiViewPanel extends JPanel {
 
-  final static int UNIT = 20;
+  public final static int UNIT = 20;
 
   private MusicEditorModel model;
   //private List<Integer> activeKeys;
+
+  private boolean practice;
 
   private int margin;
 
@@ -35,7 +34,8 @@ public class PianoGuiViewPanel extends JPanel {
   public PianoGuiViewPanel(MusicEditorModel model) {
     this.model = model;
     this.margin = UNIT * 2;
-    this.setPreferredSize(new Dimension(this.margin * 14, this.margin * 2));
+    practice = false;
+    this.setPreferredSize(new Dimension(this.margin * 14, this.margin * 8));
   }
 
   @Override
@@ -43,6 +43,7 @@ public class PianoGuiViewPanel extends JPanel {
     // Handle the default painting
     super.paintComponent(g);
     this.drawPiano(g);
+    this.drawTempo(g);
   }
 
   private void drawPiano(Graphics g) {
@@ -104,7 +105,20 @@ public class PianoGuiViewPanel extends JPanel {
             pitchInd != 7 && pitchInd != 9 && pitchInd != 11;
   }
 
+  private void drawTempo(Graphics g) {
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setFont(new Font("TimesRoman", Font.PLAIN, 30));
+    g2.drawString("Tempo: " + model.getTempo(), UNIT * 80, UNIT * 5);
+    if (practice) {
+      g2.drawString("Practice Mode", UNIT * 80, UNIT * 10);
+    }
+  }
+
   protected String log() {
     return "";
+  }
+
+  public void setPractice(boolean mode) {
+    this.practice = mode;
   }
 }

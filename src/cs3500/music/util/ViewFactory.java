@@ -1,9 +1,13 @@
 package cs3500.music.util;
 
+import cs3500.music.controller.MusicController;
+import cs3500.music.controller.MusicControllerImpl;
 import cs3500.music.model.MusicEditorModel;
 import cs3500.music.view.AudioVisualView;
+import cs3500.music.view.ConsoleView;
 import cs3500.music.view.GuiViewFrame;
 import cs3500.music.view.IView;
+import cs3500.music.view.IViewMain;
 import cs3500.music.view.MidiViewImpl;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -31,6 +35,9 @@ public class ViewFactory {
           throws InvalidMidiDataException, MidiUnavailableException {
     IView view;
     switch (type) {
+      case "console":
+        view = new ConsoleView(model);
+        break;
       case "visual":
         view = new GuiViewFrame(model);
         break;
@@ -39,6 +46,7 @@ public class ViewFactory {
         break;
       case "audiovisual":
         view = new AudioVisualView(model);
+        MusicController c = new MusicControllerImpl(model, (IViewMain) view);
         break;
       default:
         throw new IllegalArgumentException("invalid view type");

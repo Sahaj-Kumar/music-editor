@@ -23,7 +23,7 @@ public class MidiViewImpl implements MidiView {
 
   private Sequencer sequencer;
   private Track track;
-  private final MusicEditorModel model;
+  protected final MusicEditorModel model;
   StringBuilder log;
 
   /**
@@ -92,7 +92,8 @@ public class MidiViewImpl implements MidiView {
   }
 
   protected void addToTrack(Note n) throws InvalidMidiDataException {
-    MidiMessage startMessage = new ShortMessage(ShortMessage.NOTE_ON, 0, n.noteIndex()  + 24, 64);
+    MidiMessage startMessage = new ShortMessage(ShortMessage.NOTE_ON, 0, n.noteIndex() + 24,
+            64);
     MidiMessage stopMessage = new ShortMessage(ShortMessage.NOTE_OFF, 0, n.noteIndex() + 24, 64);
     MidiEvent startEvent = new MidiEvent(startMessage, n.getStartPoint());
     MidiEvent stopEvent = new MidiEvent(stopMessage, (n.getStartPoint() + n.getDuration() - 1));
@@ -106,10 +107,10 @@ public class MidiViewImpl implements MidiView {
   }
 
   @Override
-  public void play() throws MidiUnavailableException {
+  public void play() throws
+          MidiUnavailableException {
     this.sequencer.setTempoInBPM(this.model.getTempo());
     this.sequencer.start();
-
   }
 
   @Override
@@ -121,11 +122,13 @@ public class MidiViewImpl implements MidiView {
   @Override
   public void moveRight() {
     this.sequencer.setTickPosition(this.sequencer.getTickPosition() + 1);
+    this.sequencer.setTempoInBPM(model.getTempo());
   }
 
   @Override
   public void moveLeft() {
     this.sequencer.setTickPosition(this.sequencer.getTickPosition() - 1);
+    this.sequencer.setTempoInBPM(model.getTempo());
   }
 
   @Override
@@ -134,9 +137,35 @@ public class MidiViewImpl implements MidiView {
   }
 
   @Override
+  public void goToEnd() {
+    this.sequencer.setTickPosition(this.model.getLength());
+  }
+
+  @Override
+  public void increaseTempo() {
+    this.sequencer.setTempoInBPM(this.sequencer.getTempoInBPM() + 10);
+  }
+
+  @Override
+  public void decreaseTempo() {
+    this.sequencer.setTempoInBPM(this.sequencer.getTempoInBPM() - 10);
+  }
+
+  @Override
   public long getSequenceBeat() {
     return this.sequencer.getTickPosition() + 1;
 
+  }
+
+  @Override
+  public void placeNote(Note n) throws InvalidMidiDataException {
+    try {
+      this.addToTrack(n);
+    }
+    catch (InvalidMidiDataException x) {
+      // do nothing
+    }
+    this.sequencer.setTickPosition(this.sequencer.getTickPosition() + 2);
   }
 
   @Override

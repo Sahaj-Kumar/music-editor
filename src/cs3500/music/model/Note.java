@@ -4,8 +4,6 @@ package cs3500.music.model;
  * Created by sahaj on 6/4/2017.
  */
 
-// TODO BETTER JAVA DOC
-
 /**
  * Represents a model for a note played in music.
  * Should be able to get and set its octave, pitch, starting point, each should

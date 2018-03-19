@@ -1,9 +1,7 @@
 package cs3500.music.view;
 
-import cs3500.music.controller.KeyHandler;
-import cs3500.music.controller.MusicController;
-import cs3500.music.controller.MusicControllerImpl;
 import cs3500.music.model.MusicEditorModel;
+import cs3500.music.model.Note;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -26,7 +24,7 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   // model for view
   private MusicEditorModel model;
   // displays music sheet
-  private JPanel displayPanel;
+  private ConcreteGuiViewPanel displayPanel;
   // displays piano
   private JPanel pianoPanel;
   // scroller of sheet
@@ -38,7 +36,8 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
    * a model to base the view off of.
    * @param model model view is based off of
    */
-  public GuiViewFrame(MusicEditorModel model) throws InvalidMidiDataException, MidiUnavailableException {
+  public GuiViewFrame(MusicEditorModel model)
+          throws InvalidMidiDataException, MidiUnavailableException {
     this.model = model;
     this.displayPanel = new cs3500.music.view.ConcreteGuiViewPanel(this.model);
     this.scroll = new JScrollPane(this.displayPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -48,12 +47,7 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
     split.setAutoscrolls(true);
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     this.getContentPane().add(split);
-
-    //MusicController c = new MusicControllerImpl(this.model, this);
-    //KeyListener listener = c.buildKeyHandler();
-    //this.addKeyListener(listener);
-    //this.setFocusable(true);
-    //this.requestFocus();
+    this.displayPanel.updateParams();
 
 
     //this.addKeyListener(this);
@@ -132,8 +126,14 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
 
   @Override
   public void goToStart() {
-    this.model.setCurrentBeat(1);
+    //this.model.setCurrentBeat(1);
     this.scroll.getHorizontalScrollBar().setValue(0);
+  }
+
+  @Override
+  public void goToEnd() {
+    this.scroll.getHorizontalScrollBar()
+            .setValue(this.scroll.getHorizontalScrollBar().getMaximum());
   }
 
   /**
@@ -141,8 +141,10 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
    * or the model.
    */
   public void rePaintScene() {
+
     this.displayPanel.repaint();
     this.pianoPanel.repaint();
+
   }
 
   @Override
@@ -160,9 +162,15 @@ public class GuiViewFrame extends JFrame implements GuiView, KeyListener {
   }
 
   @Override
-  public void activate() {
-    this.initialize();
+  public void placeNote(Note n) {
+    this.model.placeNote(n);
+    this.displayPanel.updateParams();
+    this.rePaintScene();
   }
 
 
+  @Override
+  public void activate() {
+    this.initialize();
+  }
 }

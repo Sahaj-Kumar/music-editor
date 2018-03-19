@@ -6,32 +6,26 @@ package cs3500.music.controller;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
 
 /**
- * Represents a model for a controller for the music editor.
+ * Represents a model for a controller for the music editor. Should consrtuct a
+ * keyhandler and mousehandler that determine what to do based off of various
+ * different key presses and mouse clicks.
  */
 public interface MusicController {
 
-    /**
-     * Manages the key event, and tell the model what to do based on
-     * the event.
-     * @param ke the key event.
-     */
-    void manageKey(KeyEvent ke);
+  /**
+   * Build and assigns a KeyHandler to the view. This should support all the functionality
+   * desired involving key presses.
+   * @throws InvalidMidiDataException error during midi processes
+   * @throws MidiUnavailableException error during midi processes
+   */
+  void buildAndAssignKeyHandler() throws InvalidMidiDataException, MidiUnavailableException;
 
-    /**
-     * Manages the mouse event, and tells the model what to do base on what
-     * is being pressed.
-     * @param me the mouse event.
-     */
-    void manageMouseClick(MouseEvent me);
+  /**
+   * Builds and assigns a MouseHandler to the view, this should support all the functionality
+   * desired involving mouse clicks.
+   */
+  void buildAndAssignMouseHandler();
 
-    void buildAndAssignKeyHandler() throws InvalidMidiDataException, MidiUnavailableException;
-
-    void buildAndAssignMouseHandler();
-
-    KeyListener buildKeyHandler();
 }

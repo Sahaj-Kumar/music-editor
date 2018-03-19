@@ -47,12 +47,6 @@ public interface MusicEditorModel {
   int getBeatsPerMeasure();
 
   /**
-   * Checks if music is playing or note.
-   * @return true if playing, false otherwise.
-   */
-  boolean isPlaying();
-
-  /**
    * Return lowest note in the music, null if does not exist. Useful for display.
    * @return lowest note
    */
@@ -160,10 +154,5 @@ public interface MusicEditorModel {
    * @return string format
    */
   String getMusicState();
-
-  void play();
-
-  void pause();
-
 
 }
